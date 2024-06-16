@@ -1,0 +1,7 @@
+{
+    "go.testEnvFile": "",
+    "go.testEnvVars": {
+        "REDIS_ADDR":"localhost:6379",
+        "POSTGRES_URL":"postgres://user:password@localhost/db?sslmode=disable"
+    }
+}

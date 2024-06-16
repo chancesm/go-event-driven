@@ -1,0 +1,6 @@
+go 1.21.3
+
+use (
+	./12-cqrs-commands/01-command-vs-event
+	./project
+)
