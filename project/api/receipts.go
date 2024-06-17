@@ -54,3 +54,7 @@ func (c ReceiptsServiceClient) IssueReceipt(ctx context.Context, request entitie
 		return entities.IssueReceiptResponse{}, fmt.Errorf("unexpected status code for POST receipts-api/receipts: %d", resp.StatusCode())
 	}
 }
+
+func (c ReceiptsServiceClient) VoidReceipt(ctx context.Context, request entities.VoidReceipt) error {
+	return nil
+}

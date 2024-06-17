@@ -74,3 +74,19 @@ func (h Handler) GetTickets(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, tickets)
 }
+
+func (h Handler) PutTicketRefund(c echo.Context) error {
+	ticketID := c.Param("ticket_id")
+
+	command := entities.RefundTicket{
+		Header: entities.NewEventHeader(),
+
+		TicketID: ticketID,
+	}
+
+	if err := h.commandBus.Send(c.Request().Context(), command); err != nil {
+		return fmt.Errorf("failed to send RefundTicket command: %w", err)
+	}
+
+	return c.NoContent(http.StatusAccepted)
+}

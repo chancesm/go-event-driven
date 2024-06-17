@@ -48,9 +48,6 @@ func NewHandler(
 	if showsRepository == nil {
 		panic("missing showsRepository")
 	}
-	if eventBus == nil {
-		panic("missing eventBus")
-	}
 
 	return Handler{
 		deadNationAPI:       deadNationAPI,

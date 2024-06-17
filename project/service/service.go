@@ -7,6 +7,7 @@ import (
 	"tickets/db"
 	ticketsHttp "tickets/http"
 	"tickets/message"
+	"tickets/message/command"
 	"tickets/message/event"
 	"tickets/message/outbox"
 
@@ -49,7 +50,6 @@ func New(
 	redisPublisher = log.CorrelationPublisherDecorator{Publisher: redisPublisher}
 
 	eventBus := event.NewBus(redisPublisher)
-
 	eventsHandler := event.NewHandler(
 		deadNationAPI,
 		spreadsheetsService,
@@ -60,19 +60,28 @@ func New(
 		eventBus,
 	)
 
+	commandBus := command.NewBus(redisPublisher)
+	commandHandler := command.NewHandler(
+		commandBus,
+	)
+
 	postgresSubscriber := outbox.NewPostgresSubscriber(dbConn.DB, watermillLogger)
 	eventProcessorConfig := event.NewProcessorConfig(redisClient, watermillLogger)
+	commandProcessorConfig := command.NewProcessorConfig(redisClient, watermillLogger)
 
 	watermillRouter := message.NewWatermillRouter(
 		postgresSubscriber,
 		redisPublisher,
 		eventProcessorConfig,
 		eventsHandler,
+		commandProcessorConfig,
+		commandHandler,
 		watermillLogger,
 	)
 
 	echoRouter := ticketsHttp.NewHttpRouter(
 		eventBus,
+		commandBus,
 		spreadsheetsService,
 		ticketsRepo,
 		showsRepo,
